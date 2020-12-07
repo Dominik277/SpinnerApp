@@ -1,10 +1,15 @@
 package spinner.app;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +32,27 @@ public class MainActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner);
         btnAdd = findViewById(R.id.btnAdd);
         inputLabel = findViewById(R.id.inputLabel);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String label = inputLabel.getText().toString();
+
+                if (label.trim().length() > 0){
+                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                    db.insertLabel(label);
+
+                    inputLabel.setText("");
+
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(inputLabel.getWindowToken(),0);
+                    loadSpinnerData();
+                }else {
+                    Toast.makeText(getApplicationContext(),"Please enter label name",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
     }
 }

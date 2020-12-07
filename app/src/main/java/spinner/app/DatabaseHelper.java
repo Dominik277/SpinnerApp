@@ -5,10 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import androidx.annotation.Nullable;
 
 //ovo je nasa DatabaseHelper klasa koja nasljeđuje SQLiteOpenHelper klasu
@@ -38,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //context -->referenca na kontekst,kako bi taj kontekst mogao biti prosljeđen roditelju
     //DATABASE_NAME -->konstanta klase,ime baze podataka(String)
     //DATABASE_VERSION -->konstanta klase,verzija baze podataka(int)
-    private DatabaseHelper(@Nullable Context context) {
+    DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSTION);
     }
 
@@ -177,22 +175,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
 
-        //Cursor je interfejs koji predstavlja dvodimenzionalnu tablicu bilo koje baze podataka
+
         //kada zelimo izvuci neke podatke iz baze podataka pomocu naredbe SELECT tada ce baza podataka
         //stvoriti Cursor objekt i vratiti referencu tog objekta
+        //osnovna zadaca Cursor-a je da pokazuje na jedan redak rezultata koji je "izvucen" iz baze
+        //npr kada zelimo updatati neki redak u tablici, cursor stavimo u taj redak i azuriramo taj redak
+        //u tablici na kojem je cursor,svaki "query" u bazi podataka vraca objekt tipa Cursor i taj objekt
+        //ukazuje na jedan redak
         Cursor cursor = db.rawQuery(selectQuery,null);
 
         //cursor je objekt koji u sebi sadrzava sve podatke koje koji su se izvukli iz baze prilikom
         //izvrsavanja operacija.Cursor ne zamisljamo kao neku funkcionalnost, nego kao nešto što
         //uzima podatke iz baze podataka na vrlo efikasan nacin
+        //moveToFirst -->ova metoda govori cursor objektu da se pomakne u prvi red
+        //               ova metoda radi dvije stvari, prva je da nam govori ima li podataka u bazi
+        //               koju smo "query-ali", ako ona vraca false to znaci da nismo dobro "izvukli" podatke ili da nema podataka u tablici
+        //               i druga je naravno da stavlja cursor na prvo mjesto(ako baza nije prazna i ima podataka)
         if (cursor.moveToFirst()){
             do {
+                //ovaj dio koda nam je zasluzan za dodavanje podataka u drugi redak tablice
                 list.add(cursor.getString(1));
+
+                //moveToNext() metoda pomice cursor na sljedeci redak
             }while (cursor.moveToNext());
         }
 
+        //
         cursor.close();
+
+        //
         db.close();
+
+        //
         return list;
     }
 
