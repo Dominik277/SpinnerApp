@@ -143,27 +143,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    //List je interface koji nam omogucuje da spremamo podatke u tocno zeljenom redosljedu
+    //List mozemo zamisliti kao array, samo sto array sprema varijable dok List sprema objekte
+    //moguce je unijeti vise puta isti objekt, tj. moguce ga je duplicirati
     public List<String> getAllLabels(){
 
-        //
+        //na desnoj strani nama je List, a na lijevoj ArrayList zbog toga sto je List
+        //interface a ArrayList "implements" List
+        //znaci na ovaj smo nacin stvorili objekt u memoriji tipa ArrayList i rekli
+        //da ce u sebi pohranjivati stringove,a referecirali smo ga pomocu imena list
+        //koji je tipa List
+        //s desne strane nam mogu biti ili ArrayList ili LinkedList jer oni implemetiraju List
+        //ovakav nacin je veoma dobar ako imamo veliki kod i zelimo mjenjati između ArrayList i LinkedList
+        //onda to mozemo lako napraviti jer ce ostatak koda gledati taj tip kao da je List
         List<String> list = new ArrayList<String>();
 
-        //
+
+        //ovdje smo deklarirali varijablu selectQuery tipa string i u nju smo pohranili sve sto
+        //se nalazi na desnoj strani, a na desnoj strani se nalazi naredba "SELECT * FROM " koja
+        //uzima sve podatke iz tablice cije je ime nadodano nakon naredbe
+        //i sada kada god zelimo "izvuci" sve podatke iz neke tablice to referenciramo odnosno
+        //tu naredbu zovemo preko imena selectQuery
         String selectQuery = "SELECT * FROM " + TABLE_NAME;
 
 
-        //
+        //ovdje smo deklalirali varijablu db tipa SQLiteDatabase u koju smo spremili vrijdnost
+        //koja je vracena pomocu metode getReadableDatabase()
+        //this.getReadableDatabase() --> kreira ili otvara bazu podataka, ova metoda vraca isti objekt
+        //                               kao i getWritableDatabase osim ako ne dode do nekog problema
+        //                               kao npr, ako je memorija puna onda se ne mogu unositi novi podaci
+        //                               u bazu nego se mogu jedini isčitavati, u tom slucaju ce biti vracen
+        //                               samo onaj objekt koji moze citati bazu podatak,a ne moze upisivati
         SQLiteDatabase db = this.getReadableDatabase();
 
-        //
+
+        //Cursor je interfejs koji predstavlja dvodimenzionalnu tablicu bilo koje baze podataka
+        //kada zelimo izvuci neke podatke iz baze podataka pomocu naredbe SELECT tada ce baza podataka
+        //stvoriti Cursor objekt i vratiti referencu tog objekta
         Cursor cursor = db.rawQuery(selectQuery,null);
 
-        //
+        //cursor je objekt koji u sebi sadrzava sve podatke koje koji su se izvukli iz baze prilikom
+        //izvrsavanja operacija.Cursor ne zamisljamo kao neku funkcionalnost, nego kao nešto što
+        //uzima podatke iz baze podataka na vrlo efikasan nacin
         if (cursor.moveToFirst()){
             do {
                 list.add(cursor.getString(1));
             }while (cursor.moveToNext());
         }
+
         cursor.close();
         db.close();
         return list;
