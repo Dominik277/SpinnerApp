@@ -1,5 +1,6 @@
 package spinner.app;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -80,11 +81,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //primjer: imamo aplikaciju na google play-u i zelimo ju azurirati a to zahtjeva i azuriranje
     //baze podataka, kada ju azuriramo u aplikacijama korisnika koji vec koriste staru verziju ce
     //biti pozvana onUpgrade metoda i baza podataka ce se azurirati
-    //SQliteDatabase db -->
-    //oldVersion -->
-    //newVersion -->
+    //SQliteDatabase db --> baza podataka
+    //oldVersion --> stara verzija baze podataka koja je tipa int
+    //newVersion --> nova verzija baze podataka koja je tipa int
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+        //ovdje smo unutar metode execSQL koja izvrsava naredbe koje su joj predane kao parametar
+        //naveli sto se treba izvrsiti.U nasem slucaju to je naredba DROP TABLE IF EXIST te joj
+        //nakon te SQL naredbe dodajemo konstantu TABLE NAME u kojoj je spremljeno ime teblice
+        //DROP TABLE IF EXIST  naredba brise cijelu tablicu ako ta tablica postoji sa navedenim imenom
+        //znaci kada se pozove metoda onUpgrade prvo sto se napravi je da se izbrise tablica i
+        //kreira se nova sto cemo vidjeti u sljedecem koraku
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+
+        //ovu metodu smo vec deklarirali,to je metoda koja je zasluzena za kreiranje tablice
+        //kao parametar joj dodamo bazu podataka te ju ova metoda stvori,ona u svom tijelu ima
+        //sve potrebne podatke kako bi kreirala novu tablicu
+        onCreate(db);
+
+    }
+
+
+    public void insertLabel(String label){
+
+        //stvorili smo varijablu db na lijevoj strani u koju spremamo ono sto nam je na desnoj strani
+        //na desnoj strani se nalazi metoda getWritableDatabase koja nam omogucava da
+        // stvorimo(ako ne postoji)/otvorimo(ako postoji) i omogucimo upisivanje u nju
+        //prvi puta kada pozovemo ovu metodu izvrsavaju se onCreate(),onUpgrade() i onOpen()
+        //getWritalbeDatabase() metodu smijemo pozivaju vise puta,kada god zelimo upisivati u bazu podataka
+        //baza podata zapravo uopce nije stvorena ili otvrana dok se ne pozove metoda
+        //getWritableDatabase ili getReadableDatabase,obje metode vracaju SQLiteDatabase
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME,label);
+
+        db.insert(TABLE_NAME,null,values);
+        db.close();
     }
 }
