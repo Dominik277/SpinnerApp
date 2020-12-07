@@ -6,10 +6,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+
+    public void loadSpinnerData(){
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        List<String> labels = db.getAllLabels();
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,labels);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(dataAdapter);
+    }
+
 }
