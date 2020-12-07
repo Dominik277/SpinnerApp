@@ -2,8 +2,13 @@ package spinner.app;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.Nullable;
 
 //ovo je nasa DatabaseHelper klasa koja nasljeđuje SQLiteOpenHelper klasu
@@ -114,10 +119,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //getWritableDatabase ili getReadableDatabase,obje metode vracaju SQLiteDatabase
         SQLiteDatabase db = this.getWritableDatabase();
 
+
+        //ova klasa se koristi za spremanje seta podataka  unutar objekta u obliku key/value parova
+        //koje ContentResolver moze procesuirati
+        //kada napravimo objekt od klase ContentValues kao u nasem slucaju mozemo pozvati metodu put()
+        //koja sprema podatke u obliku key/value parova.key mora predstavljati ime jedne kolone u tablici
+        //a value je vrijednost koja se unosi u tu tablicu
         ContentValues values = new ContentValues();
+
+        //kao sto sam vec naveo gore ova metoda prima dva argumenta,na mjesto prvog parametra trebamo unijeti
+        //ime tog retka,a kao drugi parameter unosimo vrijednost koju zelimo unjeti u taj redak
         values.put(COLUMN_NAME,label);
 
+
+        //posto objekt klase Content values sluzi za upisivanje i azuriranje podataka u bazi pomocu
+        //metode put(),s tom metodom onda odredimo sta sve zelimo azurirati u bazi i onda to unosimo
+        //u objekt pomocu metode put() u obliku key/value parova
+        //onda kada stvorimo objekt te klase moramo ga predati insert metodi kao argument,i ta metoda
+        //unosi sve podatke koji su unešeni u objekt tipa ContentValues, u nasem slucaju objekt values
         db.insert(TABLE_NAME,null,values);
+
+        //metoda close() sluzi za prekid konekcije sa bazom podataka
         db.close();
     }
+
+    public List<String> getAllLabels(){
+
+        //
+        List<String> list = new ArrayList<String>();
+
+        //
+        String selectQuery = "SELECT * FROM " + TABLE_NAME;
+
+
+        //
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //
+        Cursor cursor = db.rawQuery(selectQuery,null);
+
+        //
+        if (cursor.moveToFirst()){
+            do {
+                list.add(cursor.getString(1));
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+
 }
