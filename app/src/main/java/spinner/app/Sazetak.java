@@ -13,6 +13,18 @@ O PROJEKTU
 -------------------
 MainActivity klasa
 -------------------
+-U ovoj klasi na pocetku napravimo varijable tipova onih podataka koje imamo u XML datoteci te im damo imena, u nasem slucaju
+ to su EditText,Button i Spinner, preko tih imena cemo ih referencirati.Te varijable su prazne skroz dok im ne dodamo metodu
+ findViewById koja odlazi u nasu XML dateteku te trazi koji atributi su spremljeni pod imenom koje smo naveli kao argument te
+ metode.Na ovaj nacin smo atribute iz XML-a pretvorili u Java objekte.Poslije toga smo definirali onClick metodnu na gumb unutar
+ koje smo naveli sto ce se sve desavati kada kliknemo na taj gumb.Prilikom klika na gumb sve ono sto je upisano u EditText se sprema
+ u string varijablu label te se ona provjerava pomocu if else narebe.Ako je korisnik kliknuo gumb nakon sto je upisao tekst u EditText
+ taj podatak se sprema u bazu podataka, a ako kojim slucajem nije unio tekst prilikom klika na gumb izbacit ce mu se Toast poruka da
+ unese tekst.U loadSpinnerData() metodi pravimo objekt baze podataka te pomocu adaptera unosimo podatek u bazu gdje adapter objekt ima
+ sve potrebno za unos tih podataka.I na kraju imamo dvije metode koje smo morali implementirati jer smo nasljedili klasu
+ AdapterView.onItemSelectedListener jer je ona abstraktna.Implementirali smo onNothingSelected() metodu kojoj nismo dodali nista unutar
+ tijela, te smo implementirali onItemSelected() u kojoj smo definirali sta ce se desiti kada kliknemo bilo koji redak unutar padajuceg
+ menija, a to je da ce na dnu ekrana izaci Toast poruka u kojoj ce biti navedeno onaj tekst koji je pisao.
 
 
 ---------------------
