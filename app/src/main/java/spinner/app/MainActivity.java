@@ -89,13 +89,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     //unutar if naredbe ona je vidljiva samo unutar nje, izvan if naredbe ona ne postoji
                     //preko nje smo dozvali insertLabel() metodu koja sam deklarirao u DatabaseHelper, ali je
                     //ona tipa public pa joj se moze pristupiti i unutar druge klase
-                    //
+                    //u njenoj deklaraciji smo naveli kao parametar da prima String label
+                    //u label varijablu je pohranjeno ono sto je korisnik unio u EditText
+                    //(navesti sto insertLabel() metoda radi)??????????
                     db.insertLabel(label);
 
+
+                    //ovom naredbom smo definirali da priliko otvaranja aplikacije pocetni tekst koji ce biti
+                    //prikazan u EditText-u ce biti prazan string
                     inputLabel.setText("");
+
+
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(inputLabel.getWindowToken(),0);
+
+                    //pozvali smo metodu koju smo deklarirali u DatabaseHelper klasi, mozemo ju pozvati iz druge
+                    //klase jer je ona tipa public
+                    //(objasniti sta ta metoda radi)?????????
                     loadSpinnerData();
 
                 //else dio if naredbe nam govori ako kojim slucajem je korisnik stisnuo gumb dodaj
@@ -111,19 +122,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void loadSpinnerData(){
+
+        //kao i u prethodnoj metodi u if dijelu stvaramo objekt u memoriji tipa DatabaseHelper
+        //kojeg cemo referencirati preko imena db.Pri kreiranju ovog objekta kao konstruktor
+        //saljemo metodu getApplicationContext jer smo to naveli prilikom deklaracije custom konstruktora
+        //u njegovoj klasi
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+
+        //
         List<String> labels = db.getAllLabels();
 
+
+        //ArrayAdapter sam naucio da je klasa ciji je objekt zasluzen za opskrbljivanje podacima onag
+        //view-a koji koji se koristi,bio to ListView,RecyclerView ili neki drugi, on također sluzi da
+        //odredi koji je nacin prikazivanja podataka i na kraju moramo mu priložiti objekt koji sadrzi
+        //sve podatke koje adapter treba prikazati
+        //u ovom slucaju smo napravili objekt u memoriji sa desne strane te smo u konstruktoru pohranili sve
+        //podatke koji su mu potrebni za njegov rad, a s lijeve strane smo napisali ime preko kojega cemo ga referencirati
+        //android.R.layout.simple_list_item_1 -->ovaj argument nam samo govori na koji nacin cemo posloziti podatke
+        //                                       u npr. ListView-u
+        //labels -->to je objekt u kojem su sadrzani svi podaci koji trebaju biti prikazani npr u ListView-u
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,labels);
+
+        //setDropDownResource() -->ova metoda postavlja podatke koji su unutar dataAdapter-a u padajuci menu
+        //parametar -->ovaj parametar nam prikazuje podatke na tocno određeni nacin koji je specifican za tu naredbu
+        //             kao sto simple_list_item_1 prikazuje podatke na sebi specifican nacin tako i
+        //             simple_spinner_dropdown_item prikazuje podatke na sebi svojstven nacin
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+
+        //na vrhu ove klase smo definirali objekt spinner iz XML-a, i pomocu metode setAdapter() postavljamo
+        //objekt adapter na taj spinner, a kao sto sam rekao vec, dataAdapter je objekt koji u sebi sadrzi podatke
+        //koje treba prikazati i nacin na koji treba prikazati te podatke, tako da pomocu ove metode mi sve te podatke
+        //prosljeđujemo spinner objektu kojemu je zadatak samo prikazati podatke jer sve drugo mu je omogucio
+        //dataAdapter objekt
         spinner.setAdapter(dataAdapter);
     }
+
 
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String label = parent.getItemAtPosition(position).toString();
+
+
 
         Toast.makeText(parent.getContext(),"You selected: "
         + label,Toast.LENGTH_LONG).show();
