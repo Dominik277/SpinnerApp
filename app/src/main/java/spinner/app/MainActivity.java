@@ -101,6 +101,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
+                    //objekt ove klase nam omogucuje mnogo stvari, jedna od tih stvari je micanje virtualne tipkovnice
+                    //getSystemService -->
+                    //Context.INPUT_METHOD_SERVICE -->
+                    //hideSoftInputFromWindow -->ova metoda nam omogucava da se virtualna tipokovnica makne ako kliknemo
+                    //                           negdje drugdje izvan tipkovnice
+                    //getWindowToken -->svaki Window u Activity-u ima svoj identifikacijski broj, taj identifikacijski broj
+                    //                  se zove WindowToken,znaci mi zovemo ovu metodu kako bi vratili identifikacijski broj
+                    //                  nekog određenog Window-a
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(inputLabel.getWindowToken(),0);
 
@@ -161,12 +169,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
+    //
+    //AdapterView<?> parent -->
+    //View view -->
+    //position -->
+    //id -->
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        //parent -->
+        //getItemAtPosition(position) -->
         String label = parent.getItemAtPosition(position).toString();
 
 
 
+        //
+        //parent.getContext() -->
+        //label -->
         Toast.makeText(parent.getContext(),"You selected: "
         + label,Toast.LENGTH_LONG).show();
     }
