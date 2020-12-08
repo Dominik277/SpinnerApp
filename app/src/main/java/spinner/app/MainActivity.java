@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             //onClick metoda je metoda koja u svom tijelu ima sve naredbe koje ce se izvrsiti
             //prilikom klika na gumb
-            //View v -->
+            //View v -->v nam predstavlja view koji je pritisnut
             @Override
             public void onClick(View v) {
 
@@ -120,7 +120,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //else dio if naredbe nam govori ako kojim slucajem je korisnik stisnuo gumb dodaj
                 //a prostor u EditText-u je bio prazan, onda se obavlja dio koda koji se nalazi unutar
                 //viticastih zagrada, a to je da se na dnu ekrana ispisuje Toast poruka "Molimo unesite element"
-                //getApplicationContext() -->
+                //getApplicationContext() -->ova metoda vraca kontekst cijele aplikacije(proces u kojem sve
+                //activity-e rade)
                 }else {
                     Toast.makeText(getApplicationContext(),"Molimo unesite element",
                             Toast.LENGTH_LONG).show();
@@ -137,7 +138,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //u njegovoj klasi
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-        //
+        //ovdje smo stvorili varijablu labels tipa List koju cemo kasnije koristiti kako bi prikazali
+        //ono sto smo kliknuli preko Toast poruke.U varijablu labels spremamo sve one labelse koji su
+        //spremljeni u bazi podataka tako da na objeku db koji nam predstavlja bazu podataka pozovemo
+        //metodu getAlllabels koja vraca sve labele koji su u bazi
         List<String> labels = db.getAllLabels();
 
 
@@ -168,27 +172,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-
-    //
-    //AdapterView<?> parent -->
-    //View view -->
-    //position -->
-    //id -->
+    //metoda koja se poziva kada je neki item unutar nekog view-a bio pritisnut
+    //AdapterView<?> parent --> AdapterView gdje se neka akcija odvila
+    //View view -->view unutar AdapterView-a koji je pritisnut
+    //position -->pozicija tog view-a unutar adaptera
+    //id -->id od retka koji sadrzava item koji je pritisnut
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        //parent -->
-        //getItemAtPosition(position) -->
+        //parent -->AdapterView gdje se neka akcija odvila
+        //getItemAtPosition(position) -->ova metoda vraca podatke koji se nalaze na
+        //                               određenoj poziciji unutar neke liste,a podatak
+        //                               s koje pozicije zelimo izvuci to određujemo pomocu
+        //                               parametra kojeg upisujemo kao tocnu poziciju podatka
+        //                               koji zelimo izvuci
         String label = parent.getItemAtPosition(position).toString();
 
 
 
-        //
-        //parent.getContext() -->
-        //label -->
+        //getContext() --> ova metoda vraca kontekst u kojem view trenutno "radi".Najcesce
+        //                 onu aktivnost koja je trenutno aktivna
+        //label --> label predstavlja jedan redak unutar naseg padajuceg meni-a, u svakom label-u
+        //          je pohranjeno ono sto je upisano i tako da klikom na bilo koji redak u padajucem
+        //          meni-u ce se prikazati u Toast-u ono sto je pohranjeno u varijablu label
         Toast.makeText(parent.getContext(),"You selected: "
         + label,Toast.LENGTH_LONG).show();
     }
+
 
     //metoda koja je implementirana jer se nalazi u AdapterView interfejsu ali nam nije potrebna
     //pa u njenom tijelu nismo nista deklarirali
